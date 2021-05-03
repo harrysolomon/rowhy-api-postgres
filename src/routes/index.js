@@ -1,5 +1,5 @@
 import express from 'express';
-import { indexPage, messagesPage, addMessage } from '../controllers';
+import { indexPage, messagesPage, addMessage, testAddMessage } from '../controllers';
 const indexRouter = express.Router();
 
 indexRouter.get('/', indexPage);
