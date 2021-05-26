@@ -87,6 +87,13 @@ export const lineChart = (response) => {
         schema.data.datasets[0].data.push(response[i].new_cost_per_period)
         schema.data.datasets[1].data.push(response[i].current_cost_per_period)
     }
+    let combined_cost = schema.data.datasets[0].data.concat(schema.data.datasets[1].data);
+
+        let minimum_val = Math.min.apply(Math, combined_cost);
+        let maximum_val = Math.max.apply(Math, combined_cost);
+
+        schema.options.scales.yAxes[0].ticks.suggestedMin = minimum_val
+        schema.options.scales.yAxes[0].ticks.suggestedMax = maximum_val
 
     return schema 
 };

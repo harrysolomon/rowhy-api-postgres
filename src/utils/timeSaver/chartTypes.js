@@ -25,7 +25,7 @@ export const chartTypes = (query_params,url_params) => {
             from groupings g
             join time_series ts
             on g.${query_params.filter_dimension} = ts.${query_params.filter_dimension}
-            order by time_increment`,
+            order by ts.periods`,
         summary: `
             select *
             from task_costs
@@ -52,7 +52,31 @@ export const chartTypes = (query_params,url_params) => {
             from groupings g
             join time_series ts
             on g.${query_params.filter_dimension} = ts.${query_params.filter_dimension}
-            order by time_increment`
+            order by ts.periods`,
+        totals: `
+            select 
+            calculator_id,
+            calculator_name,
+            employee_id,
+            employee_name,
+            time_saver_product_id,
+            product_name,
+            task_id,
+            task_name,
+            sum(current_cost_per_period * ${query_params.forecast_period}) over (partition by calculator_id) as overall_current_cost_per_period,
+            sum(current_cost_per_period * ${query_params.forecast_period}) over (partition by employee_id) as employee_current_cost_per_period,
+            sum(current_cost_per_period * ${query_params.forecast_period}) over (partition by time_saver_product_id) as product_current_cost_per_period,
+            sum(current_cost_per_period * ${query_params.forecast_period}) over (partition by task_id) as task_current_cost_per_period,
+            sum(new_cost_per_period * ${query_params.forecast_period}) over (partition by calculator_id) as overall_new_cost_per_period,
+            sum(new_cost_per_period * ${query_params.forecast_period}) over (partition by employee_id) as employee_new_cost_per_period,
+            sum(new_cost_per_period * ${query_params.forecast_period}) over (partition by time_saver_product_id) as product_new_cost_per_period,
+            sum(new_cost_per_period * ${query_params.forecast_period}) over (partition by task_id) as task_new_cost_per_period,
+            sum((current_cost_per_period - new_cost_per_period) * ${query_params.forecast_period}) over (partition by calculator_id) as overall_value_per_period,
+            sum((current_cost_per_period - new_cost_per_period) * ${query_params.forecast_period}) over (partition by employee_id) as employee_value_per_period,
+            sum((current_cost_per_period - new_cost_per_period) * ${query_params.forecast_period}) over (partition by time_saver_product_id) as product_value_per_period,
+            sum((current_cost_per_period - new_cost_per_period) * ${query_params.forecast_period}) over (partition by task_id) as task_value_per_period
+            from task_costs
+            where ${query_params.filter_dimension} in (${query_params.filter_value})`
     }
 
     return chart_options[url_params.chartType]
