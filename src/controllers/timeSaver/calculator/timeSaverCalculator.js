@@ -74,6 +74,9 @@ export const calculatorList = async (req, res) => {
 
   export const calculatorData = async (req, res) => {
     try {
+      if(req.query.forecast_period===''){
+        req.query.forecast_period=1
+      }
       const data = await pool.query(timeSaverOutput(req.query,req.params));
       if (req.params.chartType === 'trend') {
         res.status(200).json( lineChart(data.rows) );
@@ -81,6 +84,6 @@ export const calculatorList = async (req, res) => {
         res.status(200).json( data.rows );
       }   
     } catch (err) {
-      res.status(200).json({ messages: err.stack });
+      res.status(500).json({ messages: err.stack });
     }
   };

@@ -81,6 +81,7 @@ export const costPerTask = (query_params,url_params) => {
             ts.task_time_spent_period, 
             ts.cadence as task_cadence,
             ts.time_save_ratio,
+            (1 - ts.time_save_ratio) as new_time_save_pct,
             p.product_cost_per_task,
             ec.task_period,
             ck.singular as analysis_period,
