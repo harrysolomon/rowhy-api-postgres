@@ -5,7 +5,20 @@ export const productList = async (req, res) => {
       const client_id = req.params.clientId;
       const calculator_type_id = req.params.calculatorTypeId
       const query = `
-      select tsp.id, p.name, p.description, tsp.period, tsp.cost, tsp.time_save, tsp.time_unit, tsp.deleted_at, tsp.created_at, tsp.updated_at, tsp.created_by, u.first_name || ' ' || u.last_name AS username
+      select 
+      tsp.id, 
+      p.name, 
+      p.description, 
+      tsp.period, 
+      tsp.cost, 
+      tsp.time_save, 
+      tsp.time_unit, 
+      tsp.deleted_at, 
+      tsp.created_at, 
+      tsp.updated_at, 
+      tsp.created_by, u.first_name || ' ' || u.last_name AS username,
+      concat(time_unit || ' ' || case when time_unit = 1 then ck1.singular else ck1.plural end) as time_savings,
+      concat('$' || cost || '/' || ck2.singular) as cost_detail
       from time_saver_product tsp
       join product p
       on tsp.product_id = p.id
@@ -13,11 +26,16 @@ export const productList = async (req, res) => {
       on p.product_type_id = pt.id
       join users u 
       on tsp.created_by = u.id
+      join cadence_key ck1
+      on tsp.time_unit = ck1.id
+      join cadence_key ck2
+      on tsp.period = ck2.id
       where pt.client_id = ${client_id}
       and tsp.calculator_type_id = ${calculator_type_id}
       and tsp.deleted_at is null
       and p.deleted_at is null
       and pt.deleted_at is null
+      order by tsp.created_at desc
       `;
       const data = await pool.query(query);
       res.status(200).json( data.rows );
@@ -55,7 +73,7 @@ export const addProduct = async (req, res) => {
       await pool.query('COMMIT')
       
   } catch (err) {
-      res.status(200).json({ messages: err.stack });
+      res.status(500).json({ messages: err.stack });
       await pool.query('ROLLBACK')
   } 
 };

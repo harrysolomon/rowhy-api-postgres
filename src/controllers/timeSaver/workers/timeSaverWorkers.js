@@ -4,18 +4,30 @@ export const workerList = async (req, res) => {
     try {
       const client_id = req.params.clientId;
       const query = `
-        select w.id, w.name, w.cost, w.department, w.period, w.deleted_at, w.created_at, w.updated_at
-        from workers w 
-        join worker_type wt 
-        on w.worker_type_id = wt.id
-        where wt.client_id = ${client_id}
-        and w.deleted_at is null
-        and wt.deleted_at is null
+      select 
+      w.id, 
+      w.name, 
+      w.cost, 
+      w.department, 
+      w.period, 
+      w.deleted_at, 
+      w.created_at, 
+      w.updated_at,
+      concat('$' || w.cost || '/' || ck.singular) as cost_detail
+      from workers w 
+      join worker_type wt 
+      on w.worker_type_id = wt.id
+      join cadence_key ck 
+      on ck.id = w.period
+      where wt.client_id = ${client_id}
+      and w.deleted_at is null
+      and wt.deleted_at is null
+      order by w.created_at desc
       `;
       const data = await pool.query(query);
       res.status(200).json( data.rows );
     } catch (err) {
-      res.status(200).json({ messages: err.stack });
+      res.status(500).json({ messages: err.stack });
     }
 };
 
@@ -38,7 +50,7 @@ export const addWorker = async (req, res) => {
         await pool.query('COMMIT')
         
     } catch (err) {
-        res.status(200).json({ messages: err.stack });
+        res.status(500).json({ messages: err.stack });
         await pool.query('ROLLBACK')
     } 
 };

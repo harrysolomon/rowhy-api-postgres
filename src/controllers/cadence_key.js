@@ -9,6 +9,6 @@ export const cadenceKey = async (req, res) => {
       const data = await pool.query(query);
       res.status(200).json( data.rows );
     } catch (err) {
-      res.status(200).json({ messages: err.stack });
+      res.status(500).json({ messages: err.stack });
     }
   };

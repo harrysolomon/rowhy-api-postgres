@@ -10,7 +10,9 @@ import {
     addProduct, 
     addWorker, 
     calculatorInputs,
-    calculatorData
+    calculatorData,
+    addTimeSaverCalculator,
+    editTimeSaverCalculator
 } from '../controllers';
 
 const indexRouter = express.Router();
@@ -23,8 +25,10 @@ indexRouter.post('/:clientId/:calculatorTypeId/product/create', addProduct);
 indexRouter.get('/:clientId/:calculatorTypeId/worker/list', workerList);
 indexRouter.post('/:clientId/:calculatorTypeId/worker/create', addWorker);
 indexRouter.get('/:clientId/:calculatorTypeId/calculator/list', calculatorList);
-indexRouter.get('/:clientId/:calculatorTypeId/calculator/:reportId/inputs', calculatorInputs);
+indexRouter.get('/:clientId/:calculatorTypeId/calculator/:calculatorId/inputs', calculatorInputs);
 indexRouter.get('/:clientId/:calculatorTypeId/calculator/:calculatorId/:chartType', calculatorData);
+indexRouter.put('/:clientId/:calculatorTypeId/calculator/:calculatorId/edit', editTimeSaverCalculator);
+indexRouter.post('/:clientId/:calculatorTypeId/calculator/create', addTimeSaverCalculator);
 indexRouter.get('/cadence', cadenceKey);
 
 

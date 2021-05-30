@@ -25,7 +25,8 @@ export const costPerTask = (query_params,url_params) => {
         join calculator c 
         on c.id = tst.calculator_id
             where cr.comparison_cadence = tsp.time_unit
-            and tst.calculator_id = ${url_params.calculatorId}),
+            and tst.calculator_id = ${url_params.calculatorId}
+            and tst.deleted_at is null),
             
             employee_cost as (
             select 
