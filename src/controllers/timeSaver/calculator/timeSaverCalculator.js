@@ -40,12 +40,19 @@ export const calculatorList = async (req, res) => {
       const calculator_type_id = req.params.calculatorTypeId
       const calculator_id = req.params.calculatorId
       const query = `
-        select 
+        select
+        tst.id as id, 
         c.name as report_name, 
-        tst.name as time_saver_name, 
+        tst.name as name, 
         p.name as product_name,
-        concat(tst.current_time_spent || ' ' || ck.plural || ' per ' || ck2.singular) as current_time_spent,
-        w.name as employee_name
+        concat(tst.current_time_spent || ' ' || ck.plural || ' per ' || ck2.singular) as current_time_spent_detail,
+        w.name as employee_name,
+        tst.time_saver_worker_id as time_saver_worker_id,
+        tst.time_saver_product_id as time_saver_product_id,
+        tst.current_time_spent_period as current_time_spent_period,
+        tst.current_time_spent as current_time_spent,
+        tst.cadence as cadence,
+        max(tst.id) as max_id
         from time_saver_task tst
         join calculator c 
         on tst.calculator_id = c.id
@@ -68,6 +75,7 @@ export const calculatorList = async (req, res) => {
         and tst.deleted_at is null
         and c.deleted_at is null
         and r.deleted_at is null
+        group by 1,2,3,4,5,6,7,8,9,10,11
       `;
       const data = await pool.query(query);
       res.status(200).json( data.rows );
@@ -185,7 +193,7 @@ export const calculatorList = async (req, res) => {
 
         const tasks = format(`
         insert into time_saver_task(calculator_id,name, description, created_by, cadence, current_time_spent, current_time_spent_period, time_saver_product_id, time_saver_worker_id,created_at,updated_at) 
-        values %L RETURNING id`, task_array);
+        values %L RETURNING calculator_id, id`, task_array);
 
         //const returned_calculator_details = [calculator_output.rows[0].id]
         const new_tasks = await pool.query(tasks)

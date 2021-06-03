@@ -29,7 +29,8 @@ export const chartTypes = (query_params,url_params) => {
         summary: `
             select *
             from task_costs
-            where ${query_params.filter_dimension} in (${query_params.filter_value})`,
+            where ${query_params.filter_dimension} in (${query_params.filter_value})
+            limit 1`,
         table: `,groupings as (
             select 
             ${dimensions[0]},
