@@ -19,12 +19,12 @@ export const costPerTask = (query_params,url_params) => {
             join product p 
             on tsp.product_id = p.id
             join cadence_ratio cr 
-            on cr.base_cadence = tst.current_time_spent_period
+            on cr.base_cadence = tsp.time_unit
             join cadence_key ck 
             on ck.id = tst.current_time_spent_period
         join calculator c 
         on c.id = tst.calculator_id
-            where cr.comparison_cadence = tsp.time_unit
+            where cr.comparison_cadence = tst.current_time_spent_period
             and tst.calculator_id = ${url_params.calculatorId}
             and tst.deleted_at is null),
             
@@ -36,7 +36,6 @@ export const costPerTask = (query_params,url_params) => {
             w.cost as employee_cost,
             ck.singular as task_period, 
             (w.cost * cr.ratio) as employee_rate,
-            
             (w.cost * cr.ratio * tst.current_time_spent) as employee_cost_task
             from time_saver_task tst
             join workers w 
@@ -84,6 +83,7 @@ export const costPerTask = (query_params,url_params) => {
             ts.time_save_ratio,
             (1 - ts.time_save_ratio) as new_time_save_pct,
             p.product_cost_per_task,
+            (p.product_cost_per_task * cr.ratio) as product_cost_per_period,
             ec.task_period,
             ck.singular as analysis_period,
             ck.label as period_label,

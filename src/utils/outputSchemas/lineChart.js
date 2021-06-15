@@ -7,7 +7,10 @@ export const lineChart = (response) => {
             "datasets": [
                 {
                 "data": [],
-                "backgroundColor": "transparent",
+                "backgroundColor": [
+                    "rgba(55, 125, 255, .5)",
+                    "rgba(255, 255, 255, .2)"
+                  ],
                 "borderColor": "#377dff",
                 "borderWidth": 2,
                 "pointRadius": 0,
@@ -18,7 +21,10 @@ export const lineChart = (response) => {
                 },
                 {
                 "data": [],
-                "backgroundColor": "transparent",
+                "backgroundColor": [
+                    "rgba(0, 201, 219, .5)",
+                    "rgba(255, 255, 255, .2)"
+                  ],
                 "borderColor": "#00c9db",
                 "borderWidth": 2,
                 "pointRadius": 0,
@@ -30,6 +36,9 @@ export const lineChart = (response) => {
             ]
         },
         "options": {
+            "gradientPosition": {
+                "y1": 200
+            },
             "legend": {
                 "display": false
             },
@@ -67,6 +76,7 @@ export const lineChart = (response) => {
                 ]
             },
             "tooltips": {
+                "prefix": "$",
                 "hasIndicator": true,
                 "mode": "index",
                 "intersect": false,
