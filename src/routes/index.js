@@ -7,7 +7,9 @@ import {
     cadenceKey, 
     workerList, 
     calculatorList, 
-    addProduct, 
+    addProduct,
+    editProduct,
+    getTimeSaverProduct, 
     addWorker, 
     calculatorInputs,
     calculatorData,
@@ -22,6 +24,8 @@ indexRouter.get('/messages', messagesPage)
 indexRouter.post('/messages', addMessage);
 indexRouter.get('/:clientId/:calculatorTypeId/product/list', productList);
 indexRouter.post('/:clientId/:calculatorTypeId/product/create', addProduct);
+indexRouter.put('/:clientId/:calculatorTypeId/product/:productId/:timeSaverProductId/edit', editProduct);
+indexRouter.get('/:clientId/:calculatorTypeId/product/:timeSaverProductId', getTimeSaverProduct);
 indexRouter.get('/:clientId/:calculatorTypeId/worker/list', workerList);
 indexRouter.post('/:clientId/:calculatorTypeId/worker/create', addWorker);
 indexRouter.get('/:clientId/:calculatorTypeId/calculator/list', calculatorList);
